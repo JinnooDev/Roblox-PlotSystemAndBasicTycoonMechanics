@@ -1,0 +1,16 @@
+local player = game.Players.LocalPlayer
+local ScreenGui = player:WaitForChild("PlayerGui"):WaitForChild("MoneyGui"):WaitForChild("MoneyFrame"):WaitForChild("MoneyLabel")
+local Cash = player.leaderstats.Cash
+
+ScreenGui.Text = player.leaderstats.Cash.Value
+
+
+local function update()
+	ScreenGui.Text = tostring(Cash.Value)
+	
+end
+
+update()
+
+Cash:GetPropertyChangedSignal("Value"):Connect(update)
+

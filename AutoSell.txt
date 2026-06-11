@@ -1,0 +1,10 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ManagerAutoSell = ReplicatedStorage:WaitForChild("ManagerAutoSell")
+
+
+ManagerAutoSell.OnServerEvent:Connect(function(player)
+	while wait(1) do
+		player.leaderstats.cash.Value += 100 
+		
+	end
+end)

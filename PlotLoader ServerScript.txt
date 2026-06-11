@@ -1,0 +1,129 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local ManagerBlock = ReplicatedStorage:WaitForChild("ManagerBlock")
+local Table = ReplicatedStorage:WaitForChild("Table")
+local ManagerAutoSell = ReplicatedStorage:WaitForChild("ManagerAutoSell")
+
+
+-- 69, 2.5, -218
+
+-- manager poz 76, 5.588, -209.598
+local PlotHolders = Instance.new("Folder")
+PlotHolders.Parent = ReplicatedStorage
+PlotHolders.Name = "PlotsFolder"
+
+
+Players.PlayerAdded:Connect(function(player)
+	
+	local PlotNumber = Instance.new("IntValue")
+	PlotNumber.Name = "PlotNumber"
+	PlotNumber.Parent = player
+	
+	for i = 1, 6 do
+		if PlotHolders:FindFirstChild(tostring(i)) then
+			continue
+		end
+	
+	
+	local ClaimPlot = Instance.new("ObjectValue")
+	ClaimPlot.Parent = PlotHolders
+	ClaimPlot.Name = i
+	ClaimPlot.Value = player
+	
+	PlotNumber.Value = i
+	
+		break
+		
+	end
+	
+	if PlotNumber.Value == 0  then
+		player:Kick("max players in the game.")
+		
+		
+	end
+	
+	
+	local plotFolder = workspace.Map.Plots:FindFirstChild(tostring(PlotNumber.Value))	
+	player.CharacterAdded:Connect(function(character)
+		local teleportPart = plotFolder.teleport
+		
+		character:PivotTo(teleportPart.CFrame)
+	end)
+	
+	
+	local Sign = plotFolder.Sign
+	
+	
+	Sign.PlayerDisplay.BillboardGui.TextLabel.Text = player.Name.."'s Farm"
+
+	
+	local thumbnailType = Enum.ThumbnailType.HeadShot
+	local thumbnailSize = Enum.ThumbnailSize.Size420x420
+	
+	local playerIcon, isReady = Players:GetUserThumbnailAsync(player.UserId, thumbnailType, thumbnailSize)
+	
+	Sign.PlayerDisplay.BillboardGui.PlayerImage.Image = playerIcon
+	Sign.PlayerDisplay.BillboardGui.PlayerImage.ImageTransparency = 0
+	Sign.PlayerDisplay.BillboardGui.Enabled = true
+	
+	
+	local PlayerTable = ReplicatedStorage.Table:Clone()
+	PlayerTable.Parent = workspace	
+	PlayerTable.Position = plotFolder.Table.Position
+	
+	
+	local TableRef = Instance.new("ObjectValue")
+	TableRef.Name = "PlayerTable"
+	TableRef.Value = PlayerTable
+	TableRef.Parent = player
+	
+
+print(playerIcon)
+
+
+		
+	
+
+	local PlayerManagerBlock = ReplicatedStorage.ManagerBlock:Clone()
+	PlayerManagerBlock.Parent = workspace
+	PlayerManagerBlock.Position = Vector3.new(76, 5.588, -209.598)	
+
+	
+	PlayerManagerBlock.Touched:Connect(function(hit)
+		local character = hit.Parent
+		local player = Players:GetPlayerFromCharacter(character)
+		
+		if not player then return end
+		
+		local cash = player:WaitForChild("leaderstats"):WaitForChild("Cash")
+		
+		print(cash.Value)
+		
+		if cash.Value >= 10000 then
+			cash.Value = cash.Value - 10000
+			PlayerManagerBlock:Destroy()
+			local manager = ReplicatedStorage:WaitForChild("Manager")
+			manager.Parent = workspace
+			manager:PivotTo(CFrame.new(76, 5.588, -209.598)) 
+			ManagerAutoSell:FireClient(player)
+			
+			while true do
+				wait(1)
+				local cash = player:WaitForChild("leaderstats"):WaitForChild("Cash")
+				cash.Value = cash.Value + 100
+			end
+			
+		end
+			
+		
+	end)
+	
+end)
+
+
+Players.PlayerRemoving:Connect(function(player)
+	local PlotNumber = player.PlotNumber.Value
+	local plotClaimed = PlotHolders:FindFirstChild("PlotNumber")
+	plotClaimed:Destroy()
+	playerPlot.Sign.PlayerDisplay.BillboardGui.Enabled = false
+end)	

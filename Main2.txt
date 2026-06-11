@@ -1,0 +1,42 @@
+local player = game.Players.LocalPlayer
+local ReplitacedStorage = game:GetService("ReplicatedStorage")
+local tableRef = player:WaitForChild("PlayerTable")
+
+repeat task.wait() until tableRef.Value
+
+local tablepart = tableRef.Value
+local PlayerGui = player:WaitForChild("PlayerGui")
+
+
+
+local MoneyServer = ReplitacedStorage:WaitForChild("MoneyServer")
+
+
+local billboard = Instance.new("BillboardGui")
+billboard.Name = "TestBillboard"
+billboard.Parent = PlayerGui
+billboard.Adornee = tablepart
+billboard.Size = UDim2.fromOffset(100,100)
+billboard.AlwaysOnTop = true
+billboard.StudsOffset = Vector3.new(0,5,0)
+billboard.MaxDistance = 125
+billboard.Enabled = true
+billboard.Active = true
+
+
+local label = Instance.new("TextButton")
+label.Parent = billboard
+label.Size = UDim2.fromScale(1,1)
+label.Text = "Click"
+label.TextScaled = true
+label.BackgroundTransparency = 1
+label.Active = true
+label.TextColor3 = Color3.new(1,1,1)
+
+
+label.MouseButton1Click:Connect(function()
+	MoneyServer:FireServer()
+	print("money server fired.")
+end)
+
+print("Billboard created")

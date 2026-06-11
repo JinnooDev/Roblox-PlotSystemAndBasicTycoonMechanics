@@ -1,0 +1,12 @@
+local ReplicatedService = game:GetService("ReplicatedStorage")
+
+local MoneyFire = ReplicatedService:WaitForChild("MoneyServer")
+
+
+
+
+
+MoneyFire.OnServerEvent:Connect(function(player)
+	local cash = player:WaitForChild("leaderstats"):WaitForChild("Cash")
+	cash.Value += 1000
+end)
